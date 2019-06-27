@@ -3,9 +3,8 @@ import time # used for sleep()
 from datetime import datetime # used to display current time
 import itertools as it # provides tools for iterators, like count()
 
-# disable pyautogui's default failsafe, which breaks script when
-# mouse is moved to the top-left corner of the screen
-pyautogui.FAILSAFE = True
+# disable pyautogui's default failsafe
+pyautogui.FAILSAFE = False
 
 # set how often movement should occur, in minutes
 interval = 3
