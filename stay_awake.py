@@ -1,31 +1,35 @@
-import pyautogui # used to move cursor
-import time # used for sleep()
-from datetime import datetime # used to display current time
-import itertools as it # provides tools for iterators, like count()
-import numpy as np # used here for arange() over range()
+def stay_awake(interval: int = 3, failsafe: bool = False):
+    ''' Keeps the computer awake.
 
-# disable pyautogui's default failsafe
-pyautogui.FAILSAFE = False
+    INPUT
+        interval: int = 3
+            How often the movement should occur, in minutes
+        failsafe: bool = False
+            Enable PyAutoGUI's failsafe, which disables the GUI if the mouse
+            is moved to the top left corner
+    '''
+    import pyautogui
+    from time import sleep
+    from datetime import datetime
+    from itertools import cycle
 
-# set how often movement should occur, in minutes
-interval = 3
+    pyautogui.FAILSAFE = failsafe
+    for even in cycle([True, False]):
+        sleep(interval * 60)
+        pyautogui.press('shift')
 
-# infinite loop
-for i in it.count():
+        # Move cursor one pixel down or up
+        vertical_change = 1 if even else -1
+        pyautogui.move(0, vertical_change)
+        
+        print(f"Movement made at {datetime.now().time()}")
 
-    # wait 'interval' many minutes
-    time.sleep(interval * 60)
+if __name__ == '__main__':
+    from argparse import ArgumentParser
 
-    # press shift a couple of times
-    pyautogui.press('shift')
-    pyautogui.press('shift')
-    pyautogui.press('shift')
-    
-    # move cursor one pixel down when i is even, and one pixel
-    # up when i is odd
-    if i % 2 == 0:
-            pyautogui.move(0, 1)
-    else:
-            pyautogui.move(0, -1)
-    
-    print(f"Movement made at {datetime.now().time()}")
+    parser = ArgumentParser()
+    parser.add_argument('-i', '--interval', type = int, default = 3)
+    parser.add_argument('-f', '--failsafe', type = bool, default = False)
+    args = vars(parser.parse_args())
+
+    stay_awake(**args)
